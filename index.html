@@ -1,0 +1,216 @@
+ <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>فون لاب PhoneLab</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;background:#4a0e2e;color:#fff;text-align:center;padding-bottom:30px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px}
+.logo{font-weight:900;font-size:22px;line-height:1}
+.logo span{font-size:15px;font-weight:400}
+.login{border:1px solid #fff;background:transparent;color:#fff;padding:8px 16px;border-radius:20px;cursor:pointer}
+h1{font-size:28px;margin:10px}
+.sub{opacity:.9;font-size:14px}
+.badge{display:inline-block;background:#ffb3c8;color:#4a0e2e;padding:8px 14px;border-radius:14px;font-size:13px;font-weight:700;margin:10px}
+.card{background:#fff;color:#222;margin:14px;border-radius:22px;padding:16px;text-align:right}
+.card h2{color:#4a0e2e;text-align:center;margin:0 0 12px}
+label{font-weight:800;display:block;margin:14px 0 6px}
+.opt{border:1px solid #e84393;background:#fff;color:#222;padding:10px 12px;border-radius:18px;display:inline-block;margin:4px;cursor:pointer;font-size:14px}
+.opt.sel{background:#e84393;color:#fff}
+input{width:100%;padding:13px;margin:6px 0;border-radius:12px;border:1px solid #ddd;text-align:center;font-size:16px}
+.hint{text-align:center;color:#777;font-size:13px}
+.pink{background:#e84393;color:#fff;border:none;padding:15px;border-radius:14px;width:100%;font-size:18px;font-weight:800;cursor:pointer;margin-top:10px}
+.pink2{background:#fff;color:#e84393;border:1px solid #e84393;padding:11px;border-radius:20px;width:70%;font-size:16px;cursor:pointer;margin-top:10px}
+#passBox,#setupBox,#addBox{display:none}
+.upload{display:block;margin:10px 0;background:#fff7f9;border:1.5px dashed #e84393;padding:22px;border-radius:14px;text-align:center;cursor:pointer;color:#666}
+#preview{width:100%;border-radius:14px;margin-top:10px;display:none}
+.phoneCard{background:#fff;color:#222;margin:14px;border-radius:22px;padding:14px;text-align:center}
+.phoneCard img{width:100%;border-radius:14px}
+.del{background:#ff3b3b;color:#fff;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;margin-top:10px;font-size:15px;font-weight:700}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">فون لاب<br><span>PhoneLab</span></div>
+<button class="login" onclick="openPass()">تسجيل الدخول</button>
+</header>
+
+<h1>اختر هاتفك في 30 ثانية</h1>
+<p class="sub">جاوب على 3 أسئلة فقط واحصل على أفضل هاتف يناسبك فوراً</p>
+<div class="badge">صاحب الموقع هو اللي بيختار كل حاجة</div>
+
+<div class="card">
+<h2>الاختيار السريع</h2>
+<label>3. الأولوية:</label>
+<div style="text-align:center">
+<span class="opt" onclick="sel(this,'pri')">الكاميرا</span>
+<span class="opt" onclick="sel(this,'pri')">البطارية</span>
+<span class="opt" onclick="sel(this,'pri')">الأداء</span>
+</div>
+<label>2. الاستخدام الأساسي:</label>
+<div style="text-align:center">
+<span class="opt" onclick="sel(this,'use')">الألعاب</span>
+<span class="opt" onclick="sel(this,'use')">التصوير</span>
+<span class="opt" onclick="sel(this,'use')">الاستخدام اليومي</span>
+</div>
+<label>1. الميزانية - الزبون هو اللي يكتبها:</label>
+<input id="from" type="number" placeholder="اكتبي هنا - من كام؟">
+<input id="to" type="number" placeholder="اكتبي هنا - لـ كام؟">
+<p class="hint">اكتب الميزانية اللي انت عايزها من كذا لـ كذا</p>
+<button class="pink" onclick="showPhone()">أظهر لي الهاتف المناسب</button>
+</div>
+
+<div id="phones"></div>
+
+<div style="text-align:center">
+<button class="pink2" onclick="openPass()">+ إضافة هاتف</button>
+</div>
+
+<!-- أول مرة: اللي اشترى يحط كلمة سر بنفسه -->
+<div class="card" id="setupBox">
+<h2>أهلا بيك صاحب الموقع الجديد ❤️</h2>
+<p class="hint">أول مرة تدخل، حط كلمة السر بتاعتك انت، محدش هيعرفها غيرك، ولا حتى اللي باعلك الموقع</p>
+<input id="newPass" type="password" placeholder="حط كلمة السر بتاعتك هنا">
+<input id="newPass2" type="password" placeholder="اكتبها تاني للتأكيد">
+<button class="pink" onclick="saveNewPass()">حفظ كلمة السر بتاعتي</button>
+</div>
+
+<!-- بعد كده: دخول بكلمة السر -->
+<div class="card" id="passBox">
+<h2>كلمة سر لوحة التحكم</h2>
+<p class="hint">صاحب الموقع بس هو اللي يعرفها</p>
+<input id="myPass" type="password" placeholder="اكتبي كلمة السر هنا">
+<button class="pink" onclick="checkPass()">دخول</button>
+<button class="pink2" style="width:100%;margin-top:10px" onclick="resetPass()">نسيت كلمة السر؟ غيرها</button>
+</div>
+
+<div class="card" id="addBox">
+<h2>إضافة هاتف جديد</h2>
+<p class="hint">انت اللي بتختار كل حاجة هنا</p>
+<label>اسم الهاتف</label>
+<input id="pName" placeholder="اكتبي هنا">
+<label>السعر - انت اللي تدخله</label>
+<input id="pPrice" type="number" placeholder="اكتبي هنا">
+<label>الأولوية - انت اللي تختارها</label>
+<input id="pPri" placeholder="اكتبي هنا - كاميرا / بطارية / أداء">
+<label>الاستخدام - انت اللي تختاره</label>
+<input id="pUse" placeholder="اكتبي هنا - ألعاب / تصوير / يومي">
+<label>صورة الهاتف - انت اللي تحطها</label>
+<label class="upload">اضغطي لاختيار صورة<input id="pImg" type="file" accept="image/*" style="display:none"></label>
+<img id="preview">
+<button class="pink" onclick="addPhone()">إضافة الهاتف</button>
+</div>
+
+<script>
+let chosen = {pri:'', use:''};
+let imgData = '';
+let phones = JSON.parse(localStorage.getItem('mona_phones') || '[]');
+let isAdmin = false;
+
+// كلمة السر مش في الكود خالص، صاحب الموقع هو اللي بيحطها
+function getSavedPass(){ return localStorage.getItem('site_owner_pass'); }
+
+function sel(el, type){
+  document.querySelectorAll('.opt').forEach(o=>{
+    if(o.parentElement === el.parentElement) o.classList.remove('sel');
+  });
+  el.classList.add('sel');
+  chosen[type] = el.innerText;
+}
+function openPass(){
+  let saved = getSavedPass();
+  if(!saved){
+    // أول مرة خالص - اللي اشترى يحط كلمة سر بنفسه
+    document.getElementById('setupBox').style.display='block';
+    document.getElementById('setupBox').scrollIntoView({behavior:'smooth'});
+  } else {
+    document.getElementById('passBox').style.display='block';
+    document.getElementById('passBox').scrollIntoView({behavior:'smooth'});
+  }
+}
+function saveNewPass(){
+  let p1 = document.getElementById('newPass').value;
+  let p2 = document.getElementById('newPass2').value;
+  if(!p1 || p1.length < 4){ alert('حط كلمة سر 4 حروف على الأقل'); return; }
+  if(p1 !== p2){ alert('كلمتين السر مش زي بعض'); return; }
+  localStorage.setItem('site_owner_pass', p1);
+  document.getElementById('setupBox').style.display='none';
+  isAdmin = true;
+  document.getElementById('addBox').style.display='block';
+  render();
+  alert('تمام ❤️ كلمة السر بتاعتك اتحفظت، محدش يعرفها غيرك');
+}
+function checkPass(){
+  if(document.getElementById('myPass').value === getSavedPass()){
+    isAdmin = true;
+    document.getElementById('passBox').style.display='none';
+    document.getElementById('addBox').style.display='block';
+    document.getElementById('addBox').scrollIntoView({behavior:'smooth'});
+    render();
+  } else { alert('كلمة السر غلط'); }
+}
+function resetPass(){
+  if(confirm('هتمسح كلمة السر القديمة وتحط واحدة جديدة؟')){
+    localStorage.removeItem('site_owner_pass');
+    document.getElementById('passBox').style.display='none';
+    document.getElementById('setupBox').style.display='block';
+  }
+}
+document.getElementById('pImg').addEventListener('change', e=>{
+  let f = e.target.files[0]; if(!f) return;
+  let r = new FileReader();
+  r.onload = ev => { imgData = ev.target.result; let p=document.getElementById('preview'); p.src=imgData; p.style.display='block'; };
+  r.readAsDataURL(f);
+});
+function addPhone(){
+  let n = document.getElementById('pName').value.trim();
+  let p = document.getElementById('pPrice').value.trim();
+  let pr = document.getElementById('pPri').value.trim();
+  let u = document.getElementById('pUse').value.trim();
+  if(!n || !p){ alert('اكتب اسم الهاتف والسعر'); return; }
+  phones.push({n,p,pr,u,img:imgData});
+  localStorage.setItem('mona_phones', JSON.stringify(phones));
+  document.getElementById('addBox').style.display='none';
+  document.getElementById('pName').value=''; document.getElementById('pPrice').value='';
+  document.getElementById('pPri').value=''; document.getElementById('pUse').value='';
+  imgData=''; document.getElementById('preview').style.display='none';
+  render(); alert('تمت الإضافة ❤️');
+}
+function render(){
+  let box = document.getElementById('phones');
+  box.innerHTML = phones.map((ph,i)=>`
+    <div class="phoneCard">
+      ${ph.img ? `<img src="${ph.img}">` : ''}
+      <h3>${ph.n}</h3>
+      <p>${ph.p} جنيه - ${ph.pr} - ${ph.u}</p>
+      ${isAdmin ? `<button class="del" onclick="deletePhone(${i})">🗑️ مسح الهاتف</button>` : ''}
+    </div>`).join('');
+}
+function deletePhone(i){
+  if(!confirm('متأكد عايز تمسح الهاتف ده؟')) return;
+  phones.splice(i,1);
+  localStorage.setItem('mona_phones', JSON.stringify(phones));
+  render();
+  alert('اتمسح');
+}
+function showPhone(){
+  let f = document.getElementById('from').value;
+  let t = document.getElementById('to').value;
+  if(!phones.length){ alert('لسه مفيش هواتف'); return; }
+  let list = phones.filter(ph => {
+    let price = Number(ph.p);
+    if(f && price < Number(f)) return false;
+    if(t && price > Number(t)) return false;
+    return true;
+  });
+  if(!list.length){ alert('مفيش هاتف في الميزانية دي'); return; }
+  document.getElementById('phones').scrollIntoView({behavior:'smooth'});
+  alert('لقينا ' + list.length + ' هاتف مناسب لميزانيتك');
+}
+render();
+</script>
+</body>
+</html>
